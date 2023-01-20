@@ -20,6 +20,22 @@ function importFile() {
   fileReader.readAsText(fileInput.files[0]);
 }
 
+function drawPoints(heatData)
+{
+  for (var i = 0; i < layers.length; i++) layers[i].remove();
+  layers = [];
+
+  for (var i = 0; i < heatData.length; i++)
+  {
+    layer = L.circle([heatData[i].lat, heatData[i].lng], 
+      {radius: 150, color: "#3388ff", fill: true, fillColor: "#3388ff", fillOpacity: 1}).addTo(map);
+    
+    layers.push(layer);
+  }
+
+  //vectorGroup = L.layerGroup(layers);
+}
+
 function resetSlider()
 {
   document.getElementById("myRange").value = 1;
@@ -82,6 +98,7 @@ function updateHeatmap()
     info(value, heatData[0].gdh, heatData[heatData.length - 1].gdh, deb, fin, data.length);
 
   heatmapLayer.setData(GetHeatDataObject(data));
+  drawPoints(heatData);
 }
 
 

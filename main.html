@@ -6,11 +6,13 @@
   <link rel="stylesheet" href="css/bootstrap.min.css" crossorigin=""/>
   <link rel="stylesheet" href="css/bootstrap-grid.min.css" crossorigin=""/>
   <link rel="stylesheet" href="css/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin=""/>
+  <link rel="stylesheet" href="css/Control.Coordinates.css" crossorigin=""/>
 
   <script src="js/appli.js"crossorigin=""></script>
   <script src="js/heatmap.min.js"crossorigin=""></script>
   <script src="js/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
   <script src="js/leaflet-heatmap.js"crossorigin=""></script>
+  <script src="js/Control.Coordinates.js"crossorigin=""></script>
 
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,19 +26,19 @@
       <div id="map"></div>
     </div>
     <div class="col">
-
       <div>
-        
-      </div>
 
+      </div>
       <div id="info">xxxx</div>
     </div>
   </div>
 </div>
 
 <script type="text/javascript">
+var map;
 var heatmapLayer;
 var heatData = [];
+var layers;
 
 var minGdh, maxGdh;
 var sliderSpan;
@@ -58,15 +60,23 @@ heatmapLayer = new HeatmapOverlay(cfg);
 
 var baseLayer = L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+//    'http://127.0.0.1:3650/api/tiles/2017-07-03_france_alsace/{z}/{x}/{y}',{
     attribution: '...',
-    maxZoom: 18
+    maxZoom: 14
 });
 
-var map = new L.Map('map', {
-  center: new L.LatLng(48.815, 7.700),
+map = new L.Map('map', {
+  center: new L.LatLng(48.573, 7.7558), //48.815, 7.700),
+
   zoom: 11,
   layers: [baseLayer, heatmapLayer]
 });
+
+var c = new L.Control.Coordinates();
+c.addTo(map);
+
+function onMapClick(e) { c.setCoordinates(e); }
+map.on('mousemove', onMapClick);
 
 heatmapLayer.setData(GetHeatDataObject(heatData));
 
@@ -88,8 +98,8 @@ heatmapLayer.setData(GetHeatDataObject(heatData));
 <input type="file" id="fileInput" onchange="importFile();" /><b><---- FAIRE GLISSER LE FICHIER SCHEMA ICI</b>
 </div>
 
-    <script src="js/jquery-3.4.1.js"></script>
-    <script src="js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+  <script src="js/jquery-3.4.1.js"></script>
+  <script src="js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
 
 </body>
 </html>
