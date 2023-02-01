@@ -4,14 +4,8 @@ function importFile() {
 
   fileReader.onload = function (e) {
     
-    if (fileInput.files[0].name.endsWith(".csv"))
-    {
-      heatData = importCSV(fileReader.result);
-    }
-    else
-    {
-      heatData = JSON.parse(fileReader.result).data;
-    }
+    if (fileInput.files[0].name.endsWith(".csv")) heatData = importCSV(fileReader.result);
+    else heatData = JSON.parse(fileReader.result).data;
 
     setParams(heatData);
     resetSlider();
@@ -22,6 +16,7 @@ function importFile() {
 
 function drawPoints(heatData)
 {
+  var layers;
   for (var i = 0; i < layers.length; i++) layers[i].remove();
   layers = [];
 
@@ -32,32 +27,29 @@ function drawPoints(heatData)
     
     layers.push(layer);
   }
-
-  //vectorGroup = L.layerGroup(layers);
 }
 
 function resetSlider()
 {
-  document.getElementById("myRange").value = 1;
-  updateHeatmap(1);
+  document.getElementById("fromSlider").value = 0;
+  document.getElementById("toSlider").value = 10;
+  updateHeatmap(0, 10);
 }
 
 function importCSV(txt)
 {
-  //lat / long / gdh
+  //lat / long / gdh / count
   var lines = txt.split('\n');
   var data = [];
 
   for (var i = 0; i < lines.length; i++)
   {
     var tab = lines[i].trim().split(';');
-
-    data.push({lat: tab[0], lng: tab[1], 
-      gdh: Date.parse(ConvertDate(tab[2])), count: 1 });
+    var c = (tab.length > 3) ? tab[3] : 1;
+    data.push({lat: tab[0], lng: tab[1], gdh: Date.parse(ConvertDate(tab[2])), count: c });
   }
 
   data.sort((a, b) => a.gdh > b.gdh);
-
   return data;
 }
 
@@ -65,29 +57,23 @@ function setParams(data)
 {
   minGdh = data[0].gdh;
   maxGdh = data[data.length - 1].gdh;
-
   ecartTotal = maxGdh - minGdh;
-  sliderSpan = ecartTotal / 20;
 }
 
 function info(valSlider, minGdh, maxGdh, deb, fin, nb)
 {
   document.getElementById("info").innerText = 
-    "slider : " + valSlider + "\n" +
-    "sliderSpan : " + sliderSpan + "\n" +
     "nb data : " + nb + "\n" +
     "minGdh : " + new Date(minGdh) + "\n" +
-    "maxGdh : " + new Date(maxGdh) + "\n" +
-    "deb : " + deb + "\n" +
-    "fin : " + fin + "\n";
+    "maxGdh : " + new Date(maxGdh) + "\n";
 }
 
-function updateHeatmap()
+function updateHeatmap(fromSlider, toSlider)
 {
-  value = document.getElementById("myRange").value;
-
-  var deb = minGdh + ((value - 1) * sliderSpan);
-  var fin = deb + sliderSpan;
+  const [from, to] = getParsed(fromSlider, toSlider);
+  
+  var deb = minGdh + (from * ecartTotal / 100);
+  var fin = minGdh + (to * ecartTotal / 100);
   var data = [];
 
   for (var i = 0; i < heatData.length; i++)
@@ -95,10 +81,10 @@ function updateHeatmap()
       data.push(heatData[i]);
 
   if (heatData.length > 0)
-    info(value, heatData[0].gdh, heatData[heatData.length - 1].gdh, deb, fin, data.length);
+    info(0, heatData[0].gdh, heatData[heatData.length - 1].gdh, deb, fin, data.length);
 
   heatmapLayer.setData(GetHeatDataObject(data));
-  drawPoints(heatData);
+  //drawPoints(heatData);
 }
 
 
@@ -107,17 +93,7 @@ function GetHeatDataObject(data)
   var max = 0;
   for (var i = data.length - 1; i >= 0; i--)
     if (max < data[i].count) max = data[i].count;
-
-  return { max: 2, data: data };
-}
-
-
-function ResizeSpan()
-{
-  var x = document.getElementById("SpanSize").value;
-  sliderSpan = x * 60* 60 * 1000;
-
-  document.getElementById("progressbar").value = sliderSpan / ecartTotal * 100;
+  return { max: max + 1, data: data };
 }
 
 //Excel 15/01/2000 10:10:10 to 2000-01-15 10:10:10
