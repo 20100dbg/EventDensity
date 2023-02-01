@@ -1,3 +1,12 @@
+function GetColor(s)
+{
+  var tabData = [ "" ];
+  var tabColor = [ "#3388ff" ];
+
+  var idx = tabData.find(s);
+  return tabColor[idx];
+}
+
 function importFile() {
   var fileInput = document.getElementById('fileInput');
   var fileReader = new FileReader();
@@ -16,14 +25,13 @@ function importFile() {
 
 function drawPoints(heatData)
 {
-  var layers;
   for (var i = 0; i < layers.length; i++) layers[i].remove();
   layers = [];
 
-  for (var i = 0; i < heatData.length; i++)
+  for (var i = 0; i < heatData.data.length; i++)
   {
-    layer = L.circle([heatData[i].lat, heatData[i].lng], 
-      {radius: 150, color: "#3388ff", fill: true, fillColor: "#3388ff", fillOpacity: 1}).addTo(map);
+    layer = L.circle([heatData.data[i].lat, heatData.data[i].lng], 
+      {radius: 100, color: GetColor(""), fill: true, fillColor: "#3388ff", fillOpacity: 1}).addTo(map);
     
     layers.push(layer);
   }
@@ -57,7 +65,6 @@ function setParams(data)
 {
   minGdh = data[0].gdh;
   maxGdh = data[data.length - 1].gdh;
-  ecartTotal = maxGdh - minGdh;
 }
 
 function info(valSlider, minGdh, maxGdh, deb, fin, nb)
@@ -71,9 +78,9 @@ function info(valSlider, minGdh, maxGdh, deb, fin, nb)
 function updateHeatmap(fromSlider, toSlider)
 {
   const [from, to] = getParsed(fromSlider, toSlider);
-  
-  var deb = minGdh + (from * ecartTotal / 100);
-  var fin = minGdh + (to * ecartTotal / 100);
+  var diff = maxGdh - minGdh;
+  var deb = minGdh + (from * diff / 100);
+  var fin = minGdh + (to * diff / 100);
   var data = [];
 
   for (var i = 0; i < heatData.length; i++)
@@ -83,8 +90,9 @@ function updateHeatmap(fromSlider, toSlider)
   if (heatData.length > 0)
     info(0, heatData[0].gdh, heatData[heatData.length - 1].gdh, deb, fin, data.length);
 
-  heatmapLayer.setData(GetHeatDataObject(data));
-  //drawPoints(heatData);
+  var tmp = GetHeatDataObject(data);
+  heatmapLayer.setData(tmp);
+  drawPoints(tmp);
 }
 
 

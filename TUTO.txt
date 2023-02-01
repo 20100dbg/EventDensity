@@ -10,9 +10,3 @@ Les tuiles peuvent être générés par maperitive :
 - set-geo-bounds
 - generate-tiles minzoom=8 maxzoom=12 
 - copier coller le contenu de Mapertive/Tiles dans leaflet/Carto
-
-
-
-
-TODO
-- prendre en compte une colonne count/value et baser la densité sur cette valeur

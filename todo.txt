@@ -4,6 +4,3 @@ gérer le style des points
 charger les points dans un tableau
 filtrer sur les colonnes
 utiliser le tableau comme source de données
-
-inclure un serveur carto
-pouvoir mettre de la carto perso
