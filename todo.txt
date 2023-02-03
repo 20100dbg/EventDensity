@@ -4,3 +4,16 @@ gérer le style des points
 charger les points dans un tableau
 filtrer sur les colonnes
 utiliser le tableau comme source de données
+
+- outil extraire les points d'une zone
+- retravailler l'outil IED ?
+- tableau de couleurs prédéfinies
+- afficher les colonnes > 3
+- pour chacune, champ de sélection ?
+-- < > == in(,,,)
+
+
+- panneau config
+-- afficher points
+-- afficher heatmap ?
+-- 

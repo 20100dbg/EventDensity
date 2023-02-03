@@ -1,6 +1,6 @@
 .sliders_control {
   position: relative;
-  min-height: 50px;
+  min-height: 30px;
 }
 
 input[type=range]::-webkit-slider-thumb {

@@ -1,20 +1,17 @@
 <!DOCTYPE html>
-<html>
 <head>
+  <link rel="stylesheet" href="css/appli.css" />
+  <link rel="stylesheet" href="css/bootstrap.min.css" />
+  <link rel="stylesheet" href="css/bootstrap-grid.min.css" />
+  <link rel="stylesheet" href="css/leaflet.css" />
+  <link rel="stylesheet" href="css/Control.Coordinates.css" />
+  <link rel="stylesheet" href="css/slider.css" />
 
-  <link rel="stylesheet" href="css/appli.css" crossorigin=""/>
-  <link rel="stylesheet" href="css/bootstrap.min.css" crossorigin=""/>
-  <link rel="stylesheet" href="css/bootstrap-grid.min.css" crossorigin=""/>
-  <link rel="stylesheet" href="css/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin=""/>
-  <link rel="stylesheet" href="css/Control.Coordinates.css" crossorigin=""/>
-  <link rel="stylesheet" href="css/slider.css" crossorigin=""/>
-
-  <script src="js/appli.js"crossorigin=""></script>
-  <script src="js/heatmap.min.js"crossorigin=""></script>
-  <script src="js/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
-  <script src="js/leaflet-heatmap.js"crossorigin=""></script>
-  <script src="js/Control.Coordinates.js"crossorigin=""></script>
-  
+  <script src="js/appli.js"></script>
+  <script src="js/heatmap.min.js"></script>
+  <script src="js/leaflet.js"></script>
+  <script src="js/leaflet-heatmap.js"></script>
+  <script src="js/Control.Coordinates.js"></script>
 
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -25,18 +22,13 @@
 <div class="container">
   <div class="row">
     <div class="col">
-      <br>
       <div id="map"></div>
     </div>
     <div class="col">
-      <div>
-
-      </div>
       <div id="info">xxxx</div>
     </div>
   </div>
 </div>
-<br><br>
 
 <div class="container">
   <div class="row">
@@ -47,24 +39,43 @@
           <input id="toSlider" type="range" value="10" min="0" max="100"/>
       </div>
 
-    <div>
-    <input type="file" id="fileInput" onchange="importFile();" /><b><---- FAIRE GLISSER LE FICHIER SCHEMA ICI</b>
-    </div>
+      <div id="formFilter">
+        <select id="filterColumn" onchange="colFilterSelected();"></select>
+        <!--<input type="text" id="filterValue">-->
+        <button onclick="applyFilter();">Appliquer</button><br>
 
+        <select id="filterAvailableValues" multiple></select>
+      </div>
+      <br>
+
+    <input type="file" id="fileInput" onchange="importFile();" />
     </div>
-    <div class="col-8">
-    </div>
+    <div class="col-8"></div>
   </div>
 </div>
 
 <script type="text/javascript">
 var map;
 var heatmapLayer;
-var heatData = [];
+var importedData = [];
+var filteredData = [];
 
+var layers = [];
 var minGdh, maxGdh;
 var ecart = 10;
-var layers = [];
+var tabHeaders = [];
+
+var filterCol = "";
+var filterValues = [];
+var dicCouleur = {};
+var tabColor = [ "#3388ff", "#f40600", "#ff9622", "#eff849", "#26cd14", "#00e1d6", "#e100e1", "#a7a7a7" ];
+
+var config = {
+  "showPoints" : true,
+  "showHeatmap" : true,
+  "useLocalTiles" : true
+}
+var info = {};
 
 window.onload = function() {
 var cfg = {
@@ -76,15 +87,13 @@ var cfg = {
 };
 
 
-heatData = [];
 heatmapLayer = new HeatmapOverlay(cfg);
 
-var baseLayer = L.tileLayer('carto/{z}/{x}/{y}.png',{ //'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-    maxZoom: 13
-});
+var baseLayer = L.tileLayer('carto/{z}/{x}/{y}.png', { });
+//'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 
 map = new L.Map('map', {
-  center: new L.LatLng(48.773, 7.7558), //48.815, 7.700),
+  center: new L.LatLng(48.773, 7.7558),
   zoom: 11,
   layers: [baseLayer, heatmapLayer]
 });
@@ -95,15 +104,15 @@ c.addTo(map);
 function onMouseMove(e) { c.setCoordinates(e); }
 map.on('mousemove', onMouseMove);
 
-heatmapLayer.setData(GetHeatDataObject(heatData));
+//heatmapLayer.setData(GetHeatDataObject(heatData));
 
 }; //onload
 
 </script>
 
-<script src="js/slider.js"crossorigin=""></script>
+<script src="js/slider.js"></script>
 <script src="js/jquery-3.4.1.js"></script>
-<script src="js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
