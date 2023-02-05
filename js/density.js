@@ -185,10 +185,10 @@ function drawPoints(heatData)
 
   for (var i = 0; i < heatData.data.length; i++)
   {
-    var color = dicCouleur[heatData.data[i].attr[idxColCouleur]];
+    var color = (Object.keys(dicCouleur).length == 0) ? '#000000' : dicCouleur[heatData.data[i].attr[idxColCouleur]];
 
     layer = L.circle([heatData.data[i].lat, heatData.data[i].lng], 
-      {radius: 100, color: color, fill: true, fillColor: color, fillOpacity: 1}).addTo(map);
+      {radius: config.circleSize, color: color, fill: true, fillColor: color, fillOpacity: 1}).addTo(map);
     
     layers.push(layer);
   }

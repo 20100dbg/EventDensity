@@ -3,7 +3,7 @@ function addFormFilter(obj)
   var div = document.querySelector("#containerFilter");
   div.innerHTML += '<div id="div-'+ obj.value +'" class="col-sm"></div>';
   div = document.querySelector("#div-"+ obj.value);
-  div.innerHTML = '<button onclick="delFilter(\''+ obj.value +'\')">Supprimer filtre</button><br>' + 
+  div.innerHTML = '<br><button onclick="delFilter(\''+ obj.value +'\')">Supprimer filtre</button><br>' + 
                   '<select id="values-'+ obj.value +'" multiple></select>';
   
   div = document.querySelector("#values-"+ obj.value);
@@ -32,10 +32,10 @@ function buildFilterTab()
 
   for (var i = 0; i < div.childNodes.length; i++)
   {
-    var id = parseInt(div.childNodes[0].id.split('-')[1]);
+    var id = parseInt(div.childNodes[i].id.split('-')[1]);
     var tmpVals = document.querySelectorAll("#values-"+ id +" option:checked");
     var filterValues = [];
-    for (var i = 0; i < tmpVals.length; i++) filterValues.push(tmpVals[i].text);
+    for (var j = 0; j < tmpVals.length; j++) filterValues.push(tmpVals[j].text);
     tabFilter.push({"idxCol": id, "values" : filterValues });
   }
 
@@ -53,8 +53,9 @@ function applyFilter()
     var tabFlag = [];
     for (var j = 0; j < tabFilter.length; j++)
     {
-      var idxCol = tabFilter[j].idxCol;      
-      tabFlag.push(tabFilter[j].values.indexOf(importedData[i].attr[idxCol]) > -1);
+      var idxCol = tabFilter[j].idxCol;
+      var tmp = importedData[i].attr[idxCol];
+      tabFlag.push(tabFilter[j].values.indexOf(tmp) > -1);
     }
 
     if ((config.filterAllCriteria && !tabFlag.includes(false)) ||

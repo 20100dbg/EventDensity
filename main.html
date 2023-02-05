@@ -31,45 +31,62 @@
   </div>
 </div>
 
-
-<div class="sliders_control">
-    <input id="fromSlider" type="range" value="0" min="0" max="100"/>
-    <input id="toSlider" type="range" value="10" min="0" max="100"/>
-</div>
-
 <div class="container">
-  <button data-toggle="collapse" data-target="#config">Afficher paramètres</button>
-  <div id="config" class="collapse">
-    <label for="showPoints"><input type="checkbox" id="showPoints">Montrer les points</label><br>
-    <label for="showHeatmap"><input type="checkbox" id="showHeatmap">Montrer la heatmap</label><br>
-    <label for="useLocalTiles"><input type="checkbox" id="useLocalTiles">Utiliser les tuiles locales au lieu d'OSM</label><br>
-    <label for="filterAllCriteria"><input type="checkbox" id="filterAllCriteria">Tous les filtres</label><br>
-    <br>
-    <button onclick="saveConfig();">Enregistrer</button>
+  <div class="row">
+    <div class="col">
+      <div class="sliders_control">
+          <input id="fromSlider" type="range" value="0" min="0" max="100"/>
+          <input id="toSlider" type="range" value="10" min="0" max="100"/>
+      </div>
+    </div>
   </div>
-</div>
-<br>
 
-<div id="formCouleur" class="container">
-  Coloration<br>
-  <select id="CouleurColumn" onchange="changeCouleur(this);"></select><br>
-  <select id="CouleurValues" multiple readonly></select>
-</div>
+  <div class="row">
+    <div class="col border">
+      <button data-toggle="collapse" data-target="#config">Afficher paramètres</button>
+      <div id="config" class="collapse">
+        <label for="showPoints"><input type="checkbox" id="showPoints">Montrer les points</label><br>
+        <label for="showHeatmap"><input type="checkbox" id="showHeatmap">Montrer la heatmap</label><br>
+        <label for="filterAllCriteria"><input type="checkbox" id="filterAllCriteria">Le point doit répondre à tous les filtres</label><br>
+        <br>
+        <button onclick="saveConfig();">Enregistrer</button>
+      </div>
+    </div>
+  </div><br>
 
-<div id="formFilter" class="container">
-  Filtres<br>
-  <select id="filterColumn" onchange="addFormFilter(this);"></select>
-  <div id="containerFilter" class="row"></div>
-  <button onclick="applyFilter();">Appliquer</button><br>
-  <br>
-  <input type="file" id="fileInput" onchange="importFile();" />
+  <div class="row">
+    <div class="col border">
+      <button data-toggle="collapse" data-target="#formCouleur">></button>Coloration
+      <div id="formCouleur" class="collapse">
+        <select id="CouleurColumn" onchange="changeCouleur(this);"></select><br>
+        <select id="CouleurValues" multiple readonly></select>
+      </div>
+    </div>
+  </div><br>
+
+  <div class="row">
+    <div class="col border">
+      <button data-toggle="collapse" data-target="#formFilter">></button>Filtres
+      <div id="formFilter" class="collapse">
+        <select id="filterColumn" onchange="addFormFilter(this);"></select>
+        <div id="containerFilter" class="row"></div><br>
+        <button onclick="applyFilter();">Appliquer</button><br>
+        <br>
+      </div>
+    </div>
+  </div><br>
+
+  <div class="row">
+    <div class="col border">
+        <input type="file" id="fileInput" onchange="importFile();" />
+      </div>
+    </div>
+  </div>
 </div>
 
 <script type="text/javascript">
-var map;
-var heatmapLayer;
-var importedData = [];
-var filteredData = [];
+var map, baseLayer, heatmapLayer;
+var importedData = [], filteredData = [];
 
 var layers = [];
 var sliderSpan = 10;
@@ -79,39 +96,37 @@ var idxColCouleur = 0;
 var dicCouleur = {};
 var tabColor = [ "#3388ff", "#f40600", "#ff9622", "#eff849", "#26cd14", "#00e1d6", "#e100e1", "#a7a7a7" ];
 
-var config = {
-  "showPoints" : true,
-  "showHeatmap" : true,
-  "useLocalTiles" : true,
-  "filterAllCriteria" : true,
-  "circleSize": 100,
-  //regler le radius heatmap
-  //centrer la vue
-}
-
-var info = {
-  nbTotalLigne: 0,
-  nbLigneFiltrees: 0,
-  nbLigneCurrent: 0,
-  minGdh: 0,
-  maxGdh: 0,
-  debSpan: 0,
-  finSpan: 0
-};
-
-window.onload = function() {
-
 var heatmapcfg = {
+  //radius = sensibilité de la heatmap. chiffre plus élevé = zone plus étendue
   "radius": 0.6, //0.01
   "maxOpacity": .8,
   "scaleRadius": true,
   "useLocalExtrema": false,
   latField: 'lat', lngField: 'lng', valueField: 'count'
 };
+
+var config = {
+  "showPoints" : true,
+  "showHeatmap" : true,
+  "filterAllCriteria" : true,
+  "circleSize": 100,
+}
+
+var info = {
+  nbTotalLigne: 0, nbLigneFiltrees: 0, nbLigneCurrent: 0,
+  minGdh: 0, maxGdh: 0, debSpan: 0, finSpan: 0
+};
+
+window.onload = function() {
+
+loadConfig();
+
 heatmapLayer = new HeatmapOverlay(heatmapcfg);
 
-var baseLayer = L.tileLayer('carto_mali/{z}/{x}/{y}.png', { });
-//'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+var URL_CARTO = "carto_mali";
+//var URL_CARTO = "https://{s}.tile.openstreetmap.org";
+
+var baseLayer = L.tileLayer(URL_CARTO + '/{z}/{x}/{y}.png', { });
 
 map = new L.Map('map', {
   center: new L.LatLng(17.92, 0.1), //(48.89,7.8),
@@ -123,19 +138,17 @@ map = new L.Map('map', {
 var objCoord = new L.Control.Coordinates();
 objCoord.addTo(map);
 map.on('mousemove', function (e) { objCoord.setCoordinates(e); });
-
-map.on('zoomend', function (e) { 
-  console.log(e);
-
-  //taille cercle
-
-  //changer le radius de la heatmap
-  //recréer l'objet heatmap
-   });
+//map.on('zoomend', function (e) { console.log(e); });
 
 
 }; //onload
 
+function loadConfig()
+{
+  document.querySelector("#showPoints").checked = config.showPoints;
+  document.querySelector("#showHeatmap").checked = config.showHeatmap;
+  document.querySelector("#filterAllCriteria").checked = config.filterAllCriteria
+}
 
 function saveConfig()
 {
@@ -143,8 +156,20 @@ function saveConfig()
   config.showHeatmap = document.querySelector("#showHeatmap").checked;
   config.filterAllCriteria = document.querySelector("#filterAllCriteria").checked;
 
-  config.useLocalTiles = document.querySelector("#useLocalTiles").checked;
-  //reset etc
+  if (config.showHeatmap) map.addLayer(heatmapLayer);
+  else map.removeLayer(heatmapLayer);
+
+  if (config.showPoints)
+  {
+    const fromSlider = document.querySelector('#fromSlider');
+    const toSlider = document.querySelector('#toSlider');
+    updateHeatmap(filteredData, fromSlider, toSlider);
+  }
+  else
+  {
+    for (var i = 0; i < layers.length; i++) layers[i].remove();
+    layers = [];
+  }
 }
 
 </script>

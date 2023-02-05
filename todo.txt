@@ -1,9 +1,5 @@
-filtre coordonnées
-
-supporter plusieurs filtres
-{ "col1" : [val1,val2] }
-
-
+- suppression d'un filtre
+--> retirer la colonne du tabFilter
 
 - panneau config
 -- afficher points
