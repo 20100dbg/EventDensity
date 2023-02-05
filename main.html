@@ -26,25 +26,44 @@
       <div id="map"></div>
     </div>
     <div class="col">
-      <div id="info">xxxx</div>
+      <div id="info"></div>
     </div>
   </div>
 </div>
 
-  
-  <div class="sliders_control">
-      <input id="fromSlider" type="range" value="0" min="0" max="100"/>
-      <input id="toSlider" type="range" value="10" min="0" max="100"/>
-  </div>
 
-  <div id="formFilter" class="container">
-    <select id="filterColumn" onchange="addFormFilter(this);"></select>
-    <div id="containerFilter" class="row"></div>
-    <button onclick="applyFilter();">Appliquer</button><br>        
-  </div>
+<div class="sliders_control">
+    <input id="fromSlider" type="range" value="0" min="0" max="100"/>
+    <input id="toSlider" type="range" value="10" min="0" max="100"/>
+</div>
 
+<div class="container">
+  <button data-toggle="collapse" data-target="#config">Afficher paramètres</button>
+  <div id="config" class="collapse">
+    <label for="showPoints"><input type="checkbox" id="showPoints">Montrer les points</label><br>
+    <label for="showHeatmap"><input type="checkbox" id="showHeatmap">Montrer la heatmap</label><br>
+    <label for="useLocalTiles"><input type="checkbox" id="useLocalTiles">Utiliser les tuiles locales au lieu d'OSM</label><br>
+    <label for="filterAllCriteria"><input type="checkbox" id="filterAllCriteria">Tous les filtres</label><br>
+    <br>
+    <button onclick="saveConfig();">Enregistrer</button>
+  </div>
+</div>
+<br>
+
+<div id="formCouleur" class="container">
+  Coloration<br>
+  <select id="CouleurColumn" onchange="changeCouleur(this);"></select><br>
+  <select id="CouleurValues" multiple readonly></select>
+</div>
+
+<div id="formFilter" class="container">
+  Filtres<br>
+  <select id="filterColumn" onchange="addFormFilter(this);"></select>
+  <div id="containerFilter" class="row"></div>
+  <button onclick="applyFilter();">Appliquer</button><br>
   <br>
   <input type="file" id="fileInput" onchange="importFile();" />
+</div>
 
 <script type="text/javascript">
 var map;
@@ -65,9 +84,11 @@ var config = {
   "showHeatmap" : true,
   "useLocalTiles" : true,
   "filterAllCriteria" : true,
+  "circleSize": 100,
   //regler le radius heatmap
   //centrer la vue
 }
+
 var info = {
   nbTotalLigne: 0,
   nbLigneFiltrees: 0,
@@ -103,7 +124,28 @@ var objCoord = new L.Control.Coordinates();
 objCoord.addTo(map);
 map.on('mousemove', function (e) { objCoord.setCoordinates(e); });
 
+map.on('zoomend', function (e) { 
+  console.log(e);
+
+  //taille cercle
+
+  //changer le radius de la heatmap
+  //recréer l'objet heatmap
+   });
+
+
 }; //onload
+
+
+function saveConfig()
+{
+  config.showPoints = document.querySelector("#showPoints").checked;
+  config.showHeatmap = document.querySelector("#showHeatmap").checked;
+  config.filterAllCriteria = document.querySelector("#filterAllCriteria").checked;
+
+  config.useLocalTiles = document.querySelector("#useLocalTiles").checked;
+  //reset etc
+}
 
 </script>
 

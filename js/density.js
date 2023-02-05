@@ -29,6 +29,7 @@ function importFile()
     printinfo();
 
     filteredData = importedData;
+    fillCouleurForm();
     fillFilterForm();
     resetSlider();
   }
@@ -104,7 +105,16 @@ function GetHeatDataObject(data)
 }
 
 
-//filtres
+//filtres et couleur
+
+function fillCouleurForm()
+{
+  var div = document.querySelector("#CouleurColumn");
+  div.innerHTML = '<option value="-1">Coloration</option>';
+
+  for (var i = 0; i < tabHeaders.length; i++)
+    div.innerHTML += "<option value='"+ i +"'>"+ tabHeaders[i] +"</option>";
+}
 
 function fillFilterForm()
 {
@@ -115,6 +125,27 @@ function fillFilterForm()
     div.innerHTML += "<option value='"+ i +"'>"+ tabHeaders[i] +"</option>";
 }
 
+function changeCouleur(obj)
+{
+  var div = document.querySelector("#CouleurValues");
+  div.innerHTML = '';
+  idxColCouleur = parseInt(obj.value);
+  dicCouleur = {};
+  var tmpTabValues = [];
+  var idxColor = 0;
+
+  for (var i = 0; i < importedData.length; i++)
+  {
+    var tmpVal = importedData[i].attr[idxColCouleur];
+    if (!tmpTabValues.includes(tmpVal))
+    {
+      tmpTabValues.push(tmpVal);
+      dicCouleur[tmpVal] = tabColor[idxColor];
+      div.innerHTML += "<option style='background:"+ tabColor[idxColor] +"'>" + tmpVal + "</option>";
+      if (idxColor < tabColor.length - 1) idxColor++;
+    }
+  }
+}
 
 
 //dessin
