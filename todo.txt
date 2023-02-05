@@ -1,19 +1,11 @@
-plotter les points sur la carto
-gérer le style des points
+filtre coordonnées
 
-charger les points dans un tableau
-filtrer sur les colonnes
-utiliser le tableau comme source de données
+supporter plusieurs filtres
+{ "col1" : [val1,val2] }
 
-- outil extraire les points d'une zone
-- retravailler l'outil IED ?
-- tableau de couleurs prédéfinies
-- afficher les colonnes > 3
-- pour chacune, champ de sélection ?
--- < > == in(,,,)
 
 
 - panneau config
 -- afficher points
 -- afficher heatmap ?
--- 
+-- afficher tuile locale ou OSM

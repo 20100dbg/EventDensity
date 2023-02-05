@@ -1,7 +1,7 @@
 function controlFromSlider(fromSlider, toSlider) {
   const [from, to] = getParsed(fromSlider, toSlider);
-  var diff = to - from;
-  toSlider.value = from + ecart;
+  if (from > to - sliderSpan) fromSlider.value = to - sliderSpan;
+  toSlider.value = from + sliderSpan;
   fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
 }
 
@@ -10,7 +10,7 @@ function controlToSlider(fromSlider, toSlider) {
   fillSlider(fromSlider, toSlider, '#C6C6C6', '#25daa5', toSlider);
   setToggleAccessible(toSlider);
 
-  ecart = to - from;
+  sliderSpan = to - from;
   if (from <= to) toSlider.value = to;
   else toSlider.value = from;
 }

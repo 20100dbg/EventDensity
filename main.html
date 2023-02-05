@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <head>
-  <link rel="stylesheet" href="css/appli.css" />
+  <link rel="stylesheet" href="css/density.css" />
   <link rel="stylesheet" href="css/bootstrap.min.css" />
   <link rel="stylesheet" href="css/bootstrap-grid.min.css" />
   <link rel="stylesheet" href="css/leaflet.css" />
   <link rel="stylesheet" href="css/Control.Coordinates.css" />
   <link rel="stylesheet" href="css/slider.css" />
 
-  <script src="js/appli.js"></script>
+  <script src="js/density.js"></script>
+  <script src="js/density_filter.js"></script>
   <script src="js/heatmap.min.js"></script>
   <script src="js/leaflet.js"></script>
   <script src="js/leaflet-heatmap.js"></script>
@@ -30,29 +31,20 @@
   </div>
 </div>
 
-<div class="container">
-  <div class="row">
-    <div class="col-4">
   
-      <div class="sliders_control">
-          <input id="fromSlider" type="range" value="0" min="0" max="100"/>
-          <input id="toSlider" type="range" value="10" min="0" max="100"/>
-      </div>
-
-      <div id="formFilter">
-        <select id="filterColumn" onchange="colFilterSelected();"></select>
-        <!--<input type="text" id="filterValue">-->
-        <button onclick="applyFilter();">Appliquer</button><br>
-
-        <select id="filterAvailableValues" multiple></select>
-      </div>
-      <br>
-
-    <input type="file" id="fileInput" onchange="importFile();" />
-    </div>
-    <div class="col-8"></div>
+  <div class="sliders_control">
+      <input id="fromSlider" type="range" value="0" min="0" max="100"/>
+      <input id="toSlider" type="range" value="10" min="0" max="100"/>
   </div>
-</div>
+
+  <div id="formFilter" class="container">
+    <select id="filterColumn" onchange="addFormFilter(this);"></select>
+    <div id="containerFilter" class="row"></div>
+    <button onclick="applyFilter();">Appliquer</button><br>        
+  </div>
+
+  <br>
+  <input type="file" id="fileInput" onchange="importFile();" />
 
 <script type="text/javascript">
 var map;
@@ -61,50 +53,55 @@ var importedData = [];
 var filteredData = [];
 
 var layers = [];
-var minGdh, maxGdh;
-var ecart = 10;
+var sliderSpan = 10;
 var tabHeaders = [];
 
-var filterCol = "";
-var filterValues = [];
+var idxColCouleur = 0;
 var dicCouleur = {};
 var tabColor = [ "#3388ff", "#f40600", "#ff9622", "#eff849", "#26cd14", "#00e1d6", "#e100e1", "#a7a7a7" ];
 
 var config = {
   "showPoints" : true,
   "showHeatmap" : true,
-  "useLocalTiles" : true
+  "useLocalTiles" : true,
+  "filterAllCriteria" : true,
+  //regler le radius heatmap
+  //centrer la vue
 }
-var info = {};
+var info = {
+  nbTotalLigne: 0,
+  nbLigneFiltrees: 0,
+  nbLigneCurrent: 0,
+  minGdh: 0,
+  maxGdh: 0,
+  debSpan: 0,
+  finSpan: 0
+};
 
 window.onload = function() {
-var cfg = {
-  "radius": 0.01,
+
+var heatmapcfg = {
+  "radius": 0.6, //0.01
   "maxOpacity": .8,
   "scaleRadius": true,
   "useLocalExtrema": false,
   latField: 'lat', lngField: 'lng', valueField: 'count'
 };
+heatmapLayer = new HeatmapOverlay(heatmapcfg);
 
-
-heatmapLayer = new HeatmapOverlay(cfg);
-
-var baseLayer = L.tileLayer('carto/{z}/{x}/{y}.png', { });
+var baseLayer = L.tileLayer('carto_mali/{z}/{x}/{y}.png', { });
 //'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 
 map = new L.Map('map', {
-  center: new L.LatLng(48.773, 7.7558),
-  zoom: 11,
+  center: new L.LatLng(17.92, 0.1), //(48.89,7.8),
+  zoom: 6,
   layers: [baseLayer, heatmapLayer]
 });
 
-var c = new L.Control.Coordinates();
-c.addTo(map);
-
-function onMouseMove(e) { c.setCoordinates(e); }
-map.on('mousemove', onMouseMove);
-
-//heatmapLayer.setData(GetHeatDataObject(heatData));
+//coordonnées
+var objCoord = new L.Control.Coordinates();
+objCoord.addTo(map);
+map.on('mousemove', function (e) { objCoord.setCoordinates(e); });
 
 }; //onload
 

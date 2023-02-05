@@ -49,18 +49,14 @@ input[type="range"] {
   -webkit-appearance: none; 
   appearance: none;
   height: 2px;
-  width: 100%;
+  width: 400px;
   position: absolute;
   background-color: #C6C6C6;
   pointer-events: none;
+  margin-left: 40px;
 }
 
 #fromSlider {
-  height: 0;
-  z-index: 1;
-}
-
-#masterSlider {
   height: 0;
   z-index: 1;
 }
