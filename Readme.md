@@ -27,6 +27,11 @@ Prise en compte d'au moins un filtre ou de tous les filtres
 
 ## Paramètres avancés
 
+Les paramètres listés ici concernent le fonctionnement global de l'application.
+Chaque changement nécessitera de rafraichir la page.
+Les paramètres peuvent être changés dans /parametres.js
+
+
 ### Tuile en ligne
 EventDensity peut afficher les tuiles OpenStreetMap en ligne pour une couverture complète
 
@@ -47,10 +52,17 @@ Par défaut 0.01
 ## Dépendances
 
 Ce logiciel utilise :
-[Leaflet 1.9.3](https://leafletjs.com/)
-[leaflet-heatmap plugin](https://www.patrick-wied.at/static/heatmapjs/plugin-leaflet-layer.html)
-[leaflet-coordinates plugin](https://github.com/zimmicz/Leaflet-Coordinates-Control)
-[Bootstrap 4.6.2](https://getbootstrap.com/)
-[Dual range slider](https://medium.com/@predragdavidovic10/native-dual-range-slider-html-css-javascript-91e778134816)
+- [Leaflet 1.9.3](https://leafletjs.com/)
+- [leaflet-heatmap plugin](https://www.patrick-wied.at/static/heatmapjs/plugin-leaflet-layer.html)
+- [leaflet-coordinates plugin](https://github.com/zimmicz/Leaflet-Coordinates-Control)
+- [Bootstrap 4.6.2](https://getbootstrap.com/)
+- [Dual range slider](https://medium.com/@predragdavidovic10/native-dual-range-slider-html-css-javascript-91e778134816)
 
 
+## Générer des tuiles
+
+Générer des tuiles PNG avec [maperitive](http://maperitive.net) :
+- zoomer sur la zone voulue
+- set-geo-bounds
+- generate-tiles minzoom=8 maxzoom=12 
+- copier coller le contenu de Mapertive/Tiles dans le dossie *carto* de EventDensity

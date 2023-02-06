@@ -11,7 +11,6 @@ function importFile()
 
     if (filename.indexOf('CITHARE') > -1) importedData = importCITHARE(fileReader.result);
     else if (ext == ".csv") importedData = importCSV(fileReader.result);
-    else if (ext == ".json") importedData = JSON.parse(fileReader.result);
     else
     {
       alert("Format inconnu");
@@ -19,12 +18,11 @@ function importFile()
     }
 
     document.querySelector("#containerFilter").innerHTML = '';
-
     info.nbTotalLigne = importedData.length;
     if (info.nbTotalLigne > 0)
     {
-    info.minGdh = importedData[0].gdh;
-    info.maxGdh = importedData[importedData.length - 1].gdh;      
+      info.minGdh = importedData[0].gdh;
+      info.maxGdh = importedData[importedData.length - 1].gdh;      
     }
     printinfo();
 

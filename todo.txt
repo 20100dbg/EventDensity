@@ -1,7 +1,2 @@
 - suppression d'un filtre
 --> retirer la colonne du tabFilter
-
-- panneau config
--- afficher points
--- afficher heatmap ?
--- afficher tuile locale ou OSM

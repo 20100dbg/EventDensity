@@ -59,4 +59,3 @@ toSlider.oninput = () =>
   controlToSlider(fromSlider, toSlider);
   updateHeatmap(filteredData, fromSlider, toSlider);
 }
-
