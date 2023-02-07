@@ -45,9 +45,9 @@
       
       <div class="row collapse" id="config">
         <div class="col-6">
-          <label for="showPoints"><input type="checkbox" id="showPoints">Montrer les points</label><br>
-          <label for="showHeatmap"><input type="checkbox" id="showHeatmap">Montrer la heatmap</label><br>
-          <label for="filterAllCriteria"><input type="checkbox" id="filterAllCriteria">Le point doit répondre à tous les filtres</label><br>
+          <label for="showPoints"><input type="checkbox" id="showPoints"> Montrer les points</label><br>
+          <label for="showHeatmap"><input type="checkbox" id="showHeatmap"> Montrer la heatmap</label><br>
+          <label for="filterAllCriteria"><input type="checkbox" id="filterAllCriteria"> Le point doit répondre à tous les filtres</label><br>
           <br>
           <button onclick="saveConfig();">Enregistrer</button>
         </div>
@@ -56,21 +56,21 @@
         </div>
       </div>
     </div>
-  </div><br>
+  </div>
 
-  <div class="row border">
+  <div class="row border" style="margin-top: 10px;">
     <div class="col">
-      <button data-toggle="collapse" data-target="#formCouleur">></button>Coloration
+      <button data-toggle="collapse" data-target="#formCouleur">></button> Coloration
       <div id="formCouleur" class="collapse">
         <select id="CouleurColumn" onchange="changeCouleur(this);"></select><br>
         <select id="CouleurValues" multiple disabled></select>
       </div>
     </div>
-  </div><br>
+  </div>
 
-  <div class="row border">
+  <div class="row border" style="margin-top: 10px;">
     <div class="col">
-      <button data-toggle="collapse" data-target="#formFilter">></button>Filtres
+      <button data-toggle="collapse" data-target="#formFilter">></button> Filtres
       <div id="formFilter" class="collapse">
         <select id="filterColumn" onchange="addFormFilter(this);"></select>
         <div id="containerFilter" class="row"></div><br>
@@ -78,9 +78,9 @@
         <br>
       </div>
     </div>
-  </div><br>
+  </div>
 
-  <div class="row border">
+  <div class="row border" style="margin-top: 10px;">
     <div class="col">
         <input type="file" id="fileInput" onchange="importFile();" />
       </div>

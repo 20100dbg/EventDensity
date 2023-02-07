@@ -219,15 +219,21 @@ function buildDicCouleur(id)
 
 function resetSlider()
 {
-  document.getElementById("fromSlider").value = 0;
-  document.getElementById("toSlider").value = 10;
-  updateHeatmap(importedData, 0, 10);
+  const fromSlider = document.querySelector('#fromSlider');
+  const toSlider = document.querySelector('#toSlider');
+  fromSlider.value = 0;
+  toSlider.value = 10;
+
+  //document.getElementById("fromSlider").value = 0;
+  //document.getElementById("toSlider").value = 10;
+  updateHeatmap(importedData, fromSlider, toSlider);
 }
 
 function printinfo()
 {
-  document.getElementById("info").innerText = 
-    
+  var x = (new Date(info.finSpan) - new Date(info.debSpan)) / 1000;
+  
+  document.getElementById("info").innerText =   
     "nbTotalLigne : " + info.nbTotalLigne + "\n" +
     "nbLigneFiltrees : " + info.nbLigneFiltrees + "\n" +
     "nbLigneCurrent : " + info.nbLigneCurrent + "\n" +
@@ -235,5 +241,20 @@ function printinfo()
     "maxGdh : " + new Date(info.maxGdh).toLocaleString() + "\n" +
     "debSpan : " + new Date(info.debSpan).toLocaleString() + "\n" +
     "finSpan : " + new Date(info.finSpan).toLocaleString() + "\n" +
+    "span : " + getSpan(x) + "\n" +
     "";
+}
+
+function getSpan(val)
+{
+  var sec = Math.floor(val % 60);
+  val = val / 60;
+  var min = Math.floor(val % 60);
+  val = val / 60;
+  var heures = Math.floor(val % 24);
+  val = val / 24;
+  var jours = Math.floor(val % 30);
+  //val = val /30;
+  //var mois = Math.floor(val);
+  return jours + "j " + heures + "h " + min + "m " + sec + "s";
 }

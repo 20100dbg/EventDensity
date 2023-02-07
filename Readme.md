@@ -65,4 +65,4 @@ Générer des tuiles PNG avec [maperitive](http://maperitive.net) :
 - zoomer sur la zone voulue
 - set-geo-bounds
 - generate-tiles minzoom=8 maxzoom=12 
-- copier coller le contenu de Mapertive/Tiles dans le dossie *carto* de EventDensity
+- copier coller le contenu de Mapertive/Tiles dans le dossier *carto* de EventDensity
