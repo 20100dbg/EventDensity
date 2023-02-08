@@ -1,5 +1,0 @@
-- suppression d'un filtre
---> retirer la colonne du tabFilter
-
-- remplissage du select d'un filtre
--- est-ce qu'il y a des doublons

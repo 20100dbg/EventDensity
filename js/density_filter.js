@@ -1,5 +1,6 @@
 function addFormFilter(obj)
 {
+  if (obj.value == "-1") return;
   var div = document.querySelector("#containerFilter");
   div.innerHTML += '<div id="div-'+ obj.value +'" class="col-sm"></div>';
   div = document.querySelector("#div-"+ obj.value);
@@ -17,12 +18,14 @@ function addFormFilter(obj)
       tmpTabValues.push(tmpVal);
       div.innerHTML += "<option value='"+ i +"'>"+ tmpVal +"</option>";
     }    
-  }  
+  }
+  document.querySelector("#filterColumn").selectedIndex = 0;
 }
 
 function delFilter(id)
 {
   document.querySelector("#div-" + id).outerHTML = '';
+  applyFilter();
 }
 
 function buildFilterTab()
