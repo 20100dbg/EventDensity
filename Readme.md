@@ -35,7 +35,7 @@ Les paramètres peuvent être changés dans /parametres.js
 ### Tuile en ligne
 EventDensity peut afficher les tuiles OpenStreetMap en ligne pour une couverture complète
 
-Dans le fichier main.html, trouver URL_CARTO
+Dans le fichier parametres.js, la variable URL_CARTO pointe sur le dépôt de carto à utiliser.
 La première ligne pointe vers le dossier local. La seconde ligne utilise la version en ligne d'OSM.
 Commenter/décommenter les lignes selon le comportement voulu.
 
@@ -43,10 +43,8 @@ Commenter/décommenter les lignes selon le comportement voulu.
 ### Sensibilité de la carte de chaleur
 Ce paramètre est pertinent selon le niveau de zoom et l'écartement des points.
 
-Dans le fichier main.html, trouver heatmapcfg
-Dans cette variable l'attribut *radius* définit le rayon de recherche pour établir la carte de chaleur.
+Dans le fichier parametres.js, la variable SENSIBILITE_HEATMAP définit le rayon de recherche pour établir la carte de chaleur.
 Augmenter la valeur pour agrandir le rayon de recherche et obtenir des points plus étendus.
-Par défaut 0.01
 
 
 ## Dépendances
