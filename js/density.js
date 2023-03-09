@@ -131,20 +131,26 @@ function changeCouleur(obj)
   dicCouleur = {};
   var tmpTabValues = [];
   var idxColor = 0;
+  var tabValeurs = {};
 
   for (var i = 0; i < importedData.length; i++)
   {
-    var tmpVal = importedData[i].attr[idxColCouleur];
-    if (!tmpTabValues.includes(tmpVal))
-    {
-      tmpTabValues.push(tmpVal);
-      dicCouleur[tmpVal] = tabColor[idxColor];
-      div.innerHTML += "<option style='background:"+ tabColor[idxColor] +"'>" + tmpVal + "</option>";
-      if (idxColor < tabColor.length - 1) idxColor++;
-    }
+    var val = importedData[i].attr[idxColCouleur];
+    if (!(val in tabValeurs)) tabValeurs[val] = 0;
+    tabValeurs[val] += 1;
+  }
+
+  var items = Object.keys(tabValeurs).map(function(key) { return [key, tabValeurs[key]]; });
+  items.sort(function(a,b) { return b[1] - a[1]; });
+
+  for (var i = 0; i < items.length; i++)
+  {
+    var val = items[i][0];
+    dicCouleur[val] = tabColor[idxColor];
+    div.innerHTML += "<option style='background:"+ tabColor[idxColor] +"'>" + val + "</option>";
+    if (idxColor < tabColor.length - 1) idxColor++;
   }
 }
-
 
 //dessin
 
@@ -192,8 +198,6 @@ function drawPoints(heatData)
   }
 }
 
-
-//buildDicCouleur(obj.value);
 
 function buildDicCouleur(id)
 {

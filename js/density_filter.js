@@ -3,22 +3,25 @@ function addFormFilter(obj)
   if (obj.value == "-1") return;
   var div = document.querySelector("#containerFilter");
   div.innerHTML += '<div id="div-'+ obj.value +'" class="col-sm"></div>';
+
   div = document.querySelector("#div-"+ obj.value);
-  div.innerHTML = '<br><button onclick="delFilter(\''+ obj.value +'\')">Supprimer filtre</button><br>' + 
-                  '<select id="values-'+ obj.value +'" multiple></select>';
-  
+  div.innerHTML = '<b>' + obj.item(obj.selectedIndex).text + '</b><br>' +
+                  '<select id="values-'+ obj.value +'" multiple></select><br>' +
+                  '<button onclick="delFilter(\''+ obj.value +'\')">Supprimer filtre</button>';
+
   div = document.querySelector("#values-"+ obj.value);
 
-  var tmpTabValues = [];
+  var tabValAttribut = [];
   for (var i = 0; i < importedData.length; i++)
   {
-    var tmpVal = importedData[i].attr[obj.value];
-    if (!tmpTabValues.includes(tmpVal))
-    {
-      tmpTabValues.push(tmpVal);
-      div.innerHTML += "<option value='"+ i +"'>"+ tmpVal +"</option>";
-    }    
+    var valAttribut = importedData[i].attr[obj.value];
+    if (!tabValAttribut.includes(valAttribut)) tabValAttribut.push(valAttribut);
   }
+
+  tabValAttribut.sort()
+  for (var i = 0; i < tabValAttribut.length; i++)
+      div.innerHTML += "<option value='"+ i +"'>"+ tabValAttribut[i] +"</option>";
+
   document.querySelector("#filterColumn").selectedIndex = 0;
 }
 

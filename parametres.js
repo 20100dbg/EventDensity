@@ -7,4 +7,5 @@ var START_COORDINATES = {lat:13.92, lng:0.1};
 
 var START_ZOOM = 6;
 
+//zone de recherche pour la carte de chaleur. chiffre plus élevé = zone plus étendue
 var SENSIBILITE_HEATMAP = 0.6;
