@@ -27,6 +27,7 @@ function importFile()
     printinfo();
 
     filteredData = importedData;
+    buildBandeau(filteredData);
     fillCouleurForm();
     fillFilterForm();
     resetSlider();
@@ -261,4 +262,44 @@ function getSpan(val)
   //val = val /30;
   //var mois = Math.floor(val);
   return jours + "j " + heures + "h " + min + "m " + sec + "s";
+}
+
+function drawLine(x)
+{
+  var c = document.getElementById("bandeau");
+  var ctx = c.getContext("2d");
+  ctx.beginPath();
+  ctx.moveTo(x, 0);
+  ctx.lineTo(x, 20);
+  ctx.stroke();
+}
+
+function buildBandeau(data)
+{
+  var startDate = getMinDate(data);
+  var endDate = getMaxDate(data);
+  var diff = endDate - startDate;
+  var largeur = 400;
+
+  for (var i = 0; i < data.length; i++)
+  {
+    var madate = endDate - data[i].gdh;
+    drawLine(madate * largeur / diff);
+  }
+}
+
+function getMinDate(tab)
+{
+  var min = new Date(2999, 11, 31).getTime();
+  for (var i = 0; i < tab.length; i++)
+    if (min > tab[i].gdh) min = tab[i].gdh;
+  return min;
+}
+
+function getMaxDate(tab)
+{
+  var max = new Date(0, 0, 1).getTime();
+  for (var i = 0; i < tab.length; i++)
+    if (max < tab[i].gdh) max = tab[i].gdh;
+  return max;
 }
