@@ -136,6 +136,7 @@ map = new L.Map('map', {
   zoom: START_ZOOM,
   layers: [baseLayer, heatmapLayer]
 });
+L.control.scale({imperial:false}).addTo(map);
 
 //coordonnées
 var objCoord = new L.Control.Coordinates();
