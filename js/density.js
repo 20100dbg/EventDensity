@@ -27,6 +27,7 @@ function importFile()
     printinfo();
 
     filteredData = importedData;
+    resetCanvas();
     buildBandeau(filteredData);
     fillCouleurForm();
     fillFilterForm();
@@ -287,6 +288,14 @@ function buildBandeau(data)
     drawLine(madate * largeur / diff);
   }
 }
+
+function resetCanvas()
+{
+  var c = document.getElementById("bandeau");
+  var ctx = c.getContext("2d");
+  ctx.clearRect(0,0,c.width,c.height);
+}
+
 
 function getMinDate(tab)
 {

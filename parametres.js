@@ -1,4 +1,4 @@
-var URL_CARTO = "carto_mali"; //dossier local
+var URL_CARTO = "carto"; //dossier local
 //var URL_CARTO = "https://{s}.tile.openstreetmap.org"; //carto online
 
 var START_COORDINATES = {lat:13.92, lng:0.1};
