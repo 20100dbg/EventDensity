@@ -1,15 +1,15 @@
-function addFormFilter(obj)
+function ajouterFormFiltre(obj)
 {
   if (obj.value == "-1") return;
-  var div = document.querySelector("#containerFilter");
+  var div = document.getElementById("divFiltres");
   div.innerHTML += '<div id="div-'+ obj.value +'" class="col-sm"></div>';
 
-  div = document.querySelector("#div-"+ obj.value);
+  div = document.getElementById("div-"+ obj.value);
   div.innerHTML = '<b>' + obj.item(obj.selectedIndex).text + '</b><br>' +
                   '<select id="values-'+ obj.value +'" multiple></select><br>' +
-                  '<button onclick="delFilter(\''+ obj.value +'\')">Supprimer filtre</button>';
+                  '<button onclick="supprimerFormFiltre(\''+ obj.value +'\')">Supprimer filtre</button>';
 
-  div = document.querySelector("#values-"+ obj.value);
+  div = document.getElementById("values-"+ obj.value);
 
   var tabValAttribut = [];
   for (var i = 0; i < importedData.length; i++)
@@ -22,18 +22,18 @@ function addFormFilter(obj)
   for (var i = 0; i < tabValAttribut.length; i++)
       div.innerHTML += "<option value='"+ i +"'>"+ tabValAttribut[i] +"</option>";
 
-  document.querySelector("#filterColumn").selectedIndex = 0;
+  document.getElementById("selectFiltre").selectedIndex = 0;
 }
 
-function delFilter(id)
+function supprimerFormFiltre(id)
 {
-  document.querySelector("#div-" + id).outerHTML = '';
-  applyFilter();
+  document.getElementById("div-" + id).outerHTML = '';
+  appliquerFiltres();
 }
 
-function buildFilterTab()
+function creerTabFiltres()
 {
-  var div = document.querySelector("#containerFilter");
+  var div = document.getElementById("divFiltres");
   var tabFilter = [];
 
   for (var i = 0; i < div.childNodes.length; i++)
@@ -49,9 +49,9 @@ function buildFilterTab()
 }
 
 
-function applyFilter()
+function appliquerFiltres()
 {
-  var tabFilter = buildFilterTab();
+  var tabFilter = creerTabFiltres();
   filteredData = [];
 
   for (var i = 0; i < importedData.length; i++)
@@ -64,13 +64,12 @@ function applyFilter()
       tabFlag.push(tabFilter[j].values.indexOf(tmp) > -1);
     }
 
-    if ((config.filterAllCriteria && !tabFlag.includes(false)) ||
-        (!config.filterAllCriteria && tabFlag.includes(true)))
+    if (!tabFlag.includes(false))
     {
       filteredData.push(importedData[i]);  
     }
   }
 
-  info.nbLigneFiltrees = filteredData.length;
-  printinfo();
+  dessiner(filteredData);
+  afficherStats();
 }

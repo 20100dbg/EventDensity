@@ -52,10 +52,16 @@ setToggleAccessible(toSlider);
 fromSlider.oninput = () => 
 {
   controlFromSlider(fromSlider, toSlider);
-  updateHeatmap(filteredData, fromSlider, toSlider);
+  majPeriode();
+
+  dessiner(filteredData);
+  afficherStats();
 }
 toSlider.oninput = () => 
 {
   controlToSlider(fromSlider, toSlider);
-  updateHeatmap(filteredData, fromSlider, toSlider);
+  majPeriode();
+  
+  dessiner(filteredData);
+  afficherStats();
 }

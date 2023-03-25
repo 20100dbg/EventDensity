@@ -7,8 +7,8 @@
   <link rel="stylesheet" href="css/Control.Coordinates.css" />
   <link rel="stylesheet" href="css/slider.css" />
 
-  <script src="parametres.js"></script>
   <script src="js/density.js"></script>
+  <script src="js/density_import.js"></script>
   <script src="js/density_filter.js"></script>
   <script src="js/heatmap.min.js"></script>
   <script src="js/leaflet.js"></script>
@@ -48,7 +48,7 @@
         <div class="col-6">
           <label for="showPoints"><input type="checkbox" id="showPoints"> Montrer les points</label><br>
           <label for="showHeatmap"><input type="checkbox" id="showHeatmap"> Montrer la heatmap</label><br>
-          <label for="filterAllCriteria"><input type="checkbox" id="filterAllCriteria"> Le point doit répondre à tous les filtres</label><br>
+          Rayon heatmap <input type="number" id="radiusHeatmap" min="1" max="10" value="1" style="border:1px solid #000">
           <br>
           <button onclick="saveConfig();">Enregistrer</button>
         </div>
@@ -62,20 +62,27 @@
   <div class="row border" style="margin-top: 10px;">
     <div class="col">
       <button data-toggle="collapse" data-target="#formCouleur">></button> Coloration
-      <div id="formCouleur" class="collapse">
-        <select id="CouleurColumn" onchange="changeCouleur(this);"></select><br>
-        <select id="CouleurValues" multiple disabled></select>
+      <div id="formCouleur" class="container collapse">
+        <div class="row">
+          <div class="col">
+          <select id="selectCouleur" onchange="changeCouleur(this);"></select><br>
+          <select id="CouleurValues" multiple disabled></select>
+          </div>
+          <div class="col-md-8">
+          <span id="statsCouleurs"></span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <div class="row border" style="margin-top: 10px;">
     <div class="col">
-      <button data-toggle="collapse" data-target="#formFilter">></button> Filtres
-      <div id="formFilter" class="collapse">
-        <select id="filterColumn" onchange="addFormFilter(this);"></select>
-        <div id="containerFilter" class="row"></div><br>
-        <button onclick="applyFilter();">Appliquer</button><br>
+      <button data-toggle="collapse" data-target="#formFiltre">></button> Filtres
+      <div id="formFiltre" class="collapse">
+        <select id="selectFiltre" onchange="ajouterFormFiltre(this);"></select>
+        <div id="divFiltres" class="row"></div><br>
+        <button onclick="appliquerFiltres();">Appliquer</button><br>
         <br>
       </div>
     </div>
@@ -91,31 +98,31 @@
 
 <script type="text/javascript">
 var map, baseLayer, heatmapLayer;
-var importedData = [], filteredData = [];
+var importedData = [], filteredData = [], drawData = [];
+
+var startDate = 0;
+var endDate = 0;
+var startSpan = 0;
+var endSpan = 0;
 
 var layers = [];
 var sliderSpan = 10;
 var tabHeaders = [];
 
-var idxColCouleur = 0;
+var idxColCouleur = -1;
 var dicCouleur = {};
+var tabValCouleur = {};
+
+var distanceNWSE = 0;
+var heatmapInit = false;
 
 var tabColor = [ "#ff0000", "#ffff00", "#00ff00", "#0080ff", "#ff80c0", "#00ffff", "#004080", "#008000", "#ff8000", "#804000", "#acac59", "#950095", "#c0c0c0"];
 //var tabColor = [ "#3388ff", "#f40600", "#ff9622", "#eff849", "#26cd14", "#00e1d6", "#e100e1", "#a7a7a7" ];
 
-var heatmapcfg = {
-  "radius": SENSIBILITE_HEATMAP,
-  "maxOpacity": .8,
-  "scaleRadius": true,
-  "useLocalExtrema": false,
-  latField: 'lat', lngField: 'lng', valueField: 'count'
-};
-
 var config = {
   "showPoints" : true,
   "showHeatmap" : true,
-  "filterAllCriteria" : true,
-  "circleSize": 100,
+  "circleSize": 3,
 }
 
 var info = {
@@ -123,51 +130,60 @@ var info = {
   minGdh: 0, maxGdh: 0, debSpan: 0, finSpan: 0
 };
 
+var heatmapcfg = {
+  "radius": 0.05,
+  "maxOpacity": .8,
+  "scaleRadius": true,
+  "useLocalExtrema": false,
+  latField: 'lat', lngField: 'lng', valueField: 'count'
+};
+
+var facteurRadius = 1;
+
 window.onload = function() {
 
-loadConfig();
+  loadConfig();
 
-heatmapLayer = new HeatmapOverlay(heatmapcfg);
+  var URL_CARTO = "carto"; //dossier local
+  //var URL_CARTO = "https://{s}.tile.openstreetmap.org"; //carto online
+  var baseLayer = L.tileLayer(URL_CARTO + '/{z}/{x}/{y}.png', { });
+  heatmapLayer = new HeatmapOverlay(heatmapcfg);
 
-var baseLayer = L.tileLayer(URL_CARTO + '/{z}/{x}/{y}.png', { });
+  map = new L.Map('map', {
+    center: {lat:48.89, lng:7.8},
+    zoom: 9,
+    layers: [baseLayer, heatmapLayer]
+  });
+  L.control.scale({imperial:false}).addTo(map);
 
-map = new L.Map('map', {
-  center: START_COORDINATES,
-  zoom: START_ZOOM,
-  layers: [baseLayer, heatmapLayer]
-});
-L.control.scale({imperial:false}).addTo(map);
-
-//coordonnées
-var objCoord = new L.Control.Coordinates();
-objCoord.addTo(map);
-map.on('mousemove', function (e) { objCoord.setCoordinates(e); });
-//map.on('zoomend', function (e) { console.log(e); });
-
+  //coordonnées
+  var objCoord = new L.Control.Coordinates();
+  objCoord.addTo(map);
+  map.on('mousemove', function (e) { objCoord.setCoordinates(e); });
 
 }; //onload
 
 function loadConfig()
 {
-  document.querySelector("#showPoints").checked = config.showPoints;
-  document.querySelector("#showHeatmap").checked = config.showHeatmap;
-  document.querySelector("#filterAllCriteria").checked = config.filterAllCriteria
+  document.getElementById("showPoints").checked = config.showPoints;
+  document.getElementById("showHeatmap").checked = config.showHeatmap;
 }
 
 function saveConfig()
 {
-  config.showPoints = document.querySelector("#showPoints").checked;
-  config.showHeatmap = document.querySelector("#showHeatmap").checked;
-  config.filterAllCriteria = document.querySelector("#filterAllCriteria").checked;
+  config.showPoints = document.getElementById("showPoints").checked;
+  config.showHeatmap = document.getElementById("showHeatmap").checked;
+  
+  facteurRadius = document.getElementById('radiusHeatmap').value;
+  facteurRadius *= 0.5;
+  initHeatmap();
 
   if (config.showHeatmap) map.addLayer(heatmapLayer);
   else map.removeLayer(heatmapLayer);
 
   if (config.showPoints)
   {
-    const fromSlider = document.querySelector('#fromSlider');
-    const toSlider = document.querySelector('#toSlider');
-    updateHeatmap(filteredData, fromSlider, toSlider);
+    dessiner(filteredData);
   }
   else
   {
