@@ -48,7 +48,7 @@
         <div class="col-6">
           <label for="showPoints"><input type="checkbox" id="showPoints"> Montrer les points</label><br>
           <label for="showHeatmap"><input type="checkbox" id="showHeatmap"> Montrer la heatmap</label><br>
-          Rayon heatmap <input type="number" id="radiusHeatmap" min="1" max="20" value="1" style="border:1px solid #000">
+          Rayon heatmap <input type="number" id="radiusHeatmap" min="1" max="50" value="10" style="border:1px solid #000">
           <br>
           <button onclick="saveConfig();">Enregistrer</button>
         </div>
@@ -87,6 +87,10 @@
       </div>
     </div>
   </div>
+
+
+</div>
+<div class="container">
 
   <div class="row border" style="margin-top: 10px;">
     <div class="col">
@@ -138,7 +142,7 @@ var heatmapcfg = {
   latField: 'lat', lngField: 'lng', valueField: 'count'
 };
 
-var facteurRadius = 1;
+var facteurRadius = 10;
 
 window.onload = function() {
 
@@ -146,6 +150,7 @@ window.onload = function() {
 
   var URL_CARTO = "carto"; //dossier local
   //var URL_CARTO = "https://{s}.tile.openstreetmap.org"; //carto online
+  
   var baseLayer = L.tileLayer(URL_CARTO + '/{z}/{x}/{y}.png', { });
   heatmapLayer = new HeatmapOverlay(heatmapcfg);
 
@@ -175,7 +180,7 @@ function saveConfig()
   config.showHeatmap = document.getElementById("showHeatmap").checked;
   
   facteurRadius = document.getElementById('radiusHeatmap').value;
-  facteurRadius *= 0.2;
+  //facteurRadius *= 0.2;
   initHeatmap();
 
   if (config.showHeatmap) map.addLayer(heatmapLayer);

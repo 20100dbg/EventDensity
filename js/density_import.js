@@ -35,9 +35,9 @@ function importFile()
     remplirFormFiltre();
     majPeriode();
 
-    dessiner(filteredData);
     centrerVue(filteredData);
     initHeatmap();
+    dessiner(filteredData);
   }
   
   fileReader.readAsText(fileInput.files[0]);
@@ -58,7 +58,8 @@ function importCSV(txt)
   {
     var tab = lines[i].trim().split(';');
     if (tab.length < 4) continue;
-    data.push({lat: tab[0], lng: tab[1], gdh: Date.parse(ConvertDate(tab[2])), 
+    data.push({lat: parseFloat(tab[0]), lng: parseFloat(tab[1]),
+      gdh: Date.parse(ConvertDate(tab[2])), 
       count: parseInt(tab[3]), attr: tab.slice(4) });
   }
 
@@ -83,7 +84,8 @@ function importCITHARE(txt)
     var tabAttr = tab.slice(5);
     for (var j = 0; j < tabAttr.length; j++) tabAttr[j] = tabAttr[j].replace(/^"+|"+$/g, '');
 
-    data.push({lat: tab[1], lng: tab[0], gdh: Date.parse(tab[4].replace(/^"+|"+$/g, '')), 
+    data.push({lat: parseFloat(tab[1]), lng: parseFloat(tab[0]), 
+      gdh: Date.parse(tab[4].replace(/^"+|"+$/g, '')), 
       count: 1, attr: tabAttr });
   }
 
@@ -117,5 +119,4 @@ function centrerVue(tabPoints)
     distanceNWSE = pointNW.distanceTo(pointSE);
 
     map.flyToBounds(bounds, {animate:false});
-    map.zoomOut();
 }

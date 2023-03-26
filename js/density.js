@@ -172,14 +172,14 @@ function afficherStats()
   var x = (new Date(endSpan) - new Date(startSpan)) / 1000;
   
   document.getElementById("info").innerText =   
-    "nbTotalLigne : " + importedData.length + "\n" +
-    "nbLigneFiltrees : " + filteredData.length + "\n" +
-    "nbLigneCurrent : " + drawData.length + "\n" +
-    "minGdh : " + new Date(startDate).toLocaleString() + "\n" +
-    "maxGdh : " + new Date(endDate).toLocaleString() + "\n" +
-    "debSpan : " + new Date(startSpan).toLocaleString() + "\n" +
-    "finSpan : " + new Date(endSpan).toLocaleString() + "\n" +
-    "span : " + getSpan(x) + "\n" +
+    "Points importés : " + importedData.length + "\n" +
+    "Après filtres : " + filteredData.length + "\n" +
+    "Avec la période : " + drawData.length + "\n" +
+    "Premier point : " + new Date(startDate).toLocaleString() + "\n" +
+    "Dernier point : " + new Date(endDate).toLocaleString() + "\n" +
+    "Début période : " + new Date(startSpan).toLocaleString() + "\n" +
+    "Fin période : " + new Date(endSpan).toLocaleString() + "\n" +
+    "Durée période : " + getSpan(x) + "\n" +
     "";
 }
 
@@ -229,13 +229,23 @@ function viderBandeau()
 function initHeatmap()
 {
   var radius = 1;
-  radius = radius * (distanceNWSE/10000);
-  majRadiusHeatmap(radius / 100);
+  var tmp = distanceNWSE / 10000;
+  //console.log('dist : ' + tmp);
+
+  radius = radius * tmp / 1400;
+  //console.log('radius : ' + radius);
+
+  majRadiusHeatmap(radius);
 }
 
 function majRadiusHeatmap(radius)
 {
   map.removeLayer(heatmapLayer);
-  heatmapcfg.radius = facteurRadius * radius;
+  radius = facteurRadius * radius;
+
+  //radius += Math.log(facteurRadius);
+  //console.log('après facteur '+ facteurRadius +' : ' + radius);
+  
+  heatmapcfg.radius = radius;
   map.addLayer(heatmapLayer);
 }
