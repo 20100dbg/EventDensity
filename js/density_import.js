@@ -23,12 +23,13 @@ function importFile()
       return;
     }
 
-    importedData.sort((a, b) => a.gdh > b.gdh);
+
+    importedData.sort((a, b) => { return a.gdh > b.gdh || -(a.gdh < b.gdh) });
     startDate = importedData[0].gdh;
     endDate = importedData[importedData.length - 1].gdh;
 
     idxColCouleur = -1;
-    filteredData = importedData;
+    filteredData = [...importedData];
 
     creerBandeau(filteredData);
     remplirFormCouleur();
@@ -38,6 +39,8 @@ function importFile()
     centrerVue(filteredData);
     initHeatmap();
     dessiner(filteredData);
+
+    afficherStats();
   }
   
   fileReader.readAsText(fileInput.files[0]);
