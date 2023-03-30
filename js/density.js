@@ -232,7 +232,7 @@ function initHeatmap()
   var tmp = distanceNWSE / 10000;
   //console.log('dist : ' + tmp);
 
-  radius = radius * tmp / 1400;
+  radius = radius * tmp / 2000;
   //console.log('radius : ' + radius);
 
   majRadiusHeatmap(radius);

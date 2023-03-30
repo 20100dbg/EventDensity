@@ -48,7 +48,7 @@
         <div class="col-6">
           <label for="showPoints"><input type="checkbox" id="showPoints"> Montrer les points</label><br>
           <label for="showHeatmap"><input type="checkbox" id="showHeatmap"> Montrer la heatmap</label><br>
-          Rayon heatmap <input type="number" id="radiusHeatmap" min="1" max="50" value="10" style="border:1px solid #000">
+          Rayon heatmap <input type="number" id="radiusHeatmap" min="1" max="50" value="4" style="border:1px solid #000">
           <br>
           <button onclick="saveConfig();">Enregistrer</button>
         </div>
@@ -118,7 +118,6 @@ var dicCouleur = {};
 var tabValCouleur = {};
 
 var distanceNWSE = 0;
-var heatmapInit = false;
 
 var tabColor = [ "#ff0000", "#ffff00", "#00ff00", "#0080ff", "#ff80c0", "#00ffff", "#004080", "#008000", "#ff8000", "#804000", "#acac59", "#950095", "#c0c0c0"];
 //var tabColor = [ "#3388ff", "#f40600", "#ff9622", "#eff849", "#26cd14", "#00e1d6", "#e100e1", "#a7a7a7" ];
@@ -142,7 +141,7 @@ var heatmapcfg = {
   latField: 'lat', lngField: 'lng', valueField: 'count'
 };
 
-var facteurRadius = 10;
+var facteurRadius = 4;
 
 window.onload = function() {
 
@@ -180,7 +179,6 @@ function saveConfig()
   config.showHeatmap = document.getElementById("showHeatmap").checked;
   
   facteurRadius = document.getElementById('radiusHeatmap').value;
-  //facteurRadius *= 0.2;
   initHeatmap();
 
   if (config.showHeatmap) map.addLayer(heatmapLayer);
